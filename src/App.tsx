@@ -62,6 +62,20 @@ function App() {
     }, 2000)
     getLinks()
   }
+
+  const eliminarEnlace = async (id: string) => {
+    const confirmacion = window.confirm("¿Estás seguro de eliminar el enlace?")
+    if (!confirmacion) return
+    await axios.get(
+      `https://z2a8mtyxgl.execute-api.us-east-1.amazonaws.com/dev/enlaces/eliminar/${id}`
+    )
+    setMostrarRespuesta("Enlace eliminado")
+    setTimeout(() => {
+      setMostrarRespuesta("")
+    }, 2000)
+    getLinks()
+  }
+
   return (
     <>
       <h1>Enlaces</h1>
@@ -82,7 +96,15 @@ function App() {
             >
               Editar
             </span>
-            - <span>Eliminar</span>
+            -{" "}
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                eliminarEnlace(link.id)
+              }}
+            >
+              Eliminar
+            </span>
           </li>
         ))}
 
