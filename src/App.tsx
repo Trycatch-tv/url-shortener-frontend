@@ -6,6 +6,9 @@ function App() {
   const [links, setLinks] = useState<any>([])
   const [mostrarInput, setMostrarInput] = useState(false)
   const [link, setLink] = useState<any>({})
+  const [enlaceCorto, setEnlaceCorto] = useState("")
+  const [enlaceOriginal, setEnlaceOriginal] = useState("")
+  const [mostrarCrear, setMostrarCrear] = useState(false)
   const [mostrarRespuesta, setMostrarRespuesta] = useState("")
   const getLinks = async () => {
     const res = await axios.get(
@@ -39,6 +42,26 @@ function App() {
     setLink({ ...link, enlace_corto: e.target.value })
   }
 
+  const onChangeEnlaceOriginal = (e: any) => {
+    setEnlaceOriginal(e.target.value)
+  }
+
+  const onChangeEnlaceCorto = (e: any) => {
+    setEnlaceCorto(e.target.value)
+  }
+
+  const crearEnlace = async () => {
+    await axios.get(
+      `https://z2a8mtyxgl.execute-api.us-east-1.amazonaws.com/dev/enlaces/crear?enlace_original=${enlaceOriginal}&enlace_corto=${enlaceCorto}`
+    )
+    setEnlaceCorto("")
+    setEnlaceOriginal("")
+    setMostrarRespuesta("Enlace creado")
+    setTimeout(() => {
+      setMostrarRespuesta("")
+    }, 2000)
+    getLinks()
+  }
   return (
     <>
       <h1>Enlaces</h1>
@@ -63,7 +86,7 @@ function App() {
           </li>
         ))}
 
-        {mostrarInput === true && (
+        {mostrarInput && (
           <>
             <input
               type="text"
@@ -83,6 +106,29 @@ function App() {
             </button>
           </>
         )}
+        {/* Formulario crear enlace */}
+        <>
+          <h3>Crear enlace</h3>
+          <hr />
+          <input
+            type="text"
+            value={enlaceOriginal}
+            placeholder="Enlace original"
+            onChange={(e) => {
+              onChangeEnlaceOriginal(e)
+            }}
+          />
+          <input
+            type="text"
+            onChange={(e) => {
+              onChangeEnlaceCorto(e)
+            }}
+            value={enlaceCorto}
+            placeholder="Enlace corto"
+          />
+          <button onClick={crearEnlace}>Crear</button>
+        </>
+        {/* Formulario crear enlace */}
         <p>{mostrarRespuesta}</p>
       </ul>
     </>
